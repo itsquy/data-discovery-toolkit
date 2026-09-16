@@ -1,6 +1,6 @@
 # Report Design Method
 
-Version 2.0 | 16 September 2026
+Version 2.1 | 16 September 2026
 
 **Purpose:** turn profiled evidence into a readable, defensible report that prepares business discovery and can evolve with new datasets.
 
@@ -176,6 +176,59 @@ For example: "The average changed, and component weights changed while recorded 
 
 Prioritize uncertainties that could change a material finding, recur across the data, or invalidate a comparison. Keep speculative explanations separate from the evidence register.
 
+## Evidence-Linked Drafts and Release
+
+Whether written manually, from a template, or with model assistance, every material factual claim should reference the relevant metric result or source evidence. Retain the result ID, definition version, input version, population, period, and qualifications in the working evidence package. A reader-facing report may use concise footnotes or drilldowns instead of displaying internal identifiers everywhere.
+
+Calculation belongs in the validated result pipeline. A drafting model must not invent missing values, silently change denominators, or upgrade a provisional interpretation to a confirmed fact. Review factual grounding and claim strength, not just whether a sentence sounds plausible. An arithmetic explanation of a weighted-average change is not evidence that a promotion caused demand to rise.
+
+Before release, verify key values against their evidence, examine material omissions, confirm unresolved assumptions remain visible, and check audience and disclosure permissions. Record the reviewer, approved version, and release destination. Approval of a report does not authorize a price change, customer contact, or another operational intervention. Publishing a revised report must preserve which earlier version it supersedes.
+
+## Close the Business and Learning Loops
+
+A pre-discovery report is an intermediate product, not proof of improved business performance. Continue only as far as evidence and authority allow:
+
+1. Resolve high-impact uncertainties with appropriate business owners and operating records. Record answers and sources, including disagreements and remaining unknowns.
+2. Revise affected definitions and comparisons. Use the [execution cycle](raw-data-profiling.md#execution-and-feedback-cycle) to invalidate and rerun dependent outputs; do not rewrite the old evidence silently.
+3. Identify the decision the evidence can inform, its owner, available alternatives, and what further information would change the decision.
+4. For an approved intervention, agree on a baseline, success measure, observation horizon, safeguards, and stopping or rollback conditions before acting.
+5. Measure the outcome using an appropriate comparison and disclose confounding changes. A before/after improvement alone does not establish that the intervention caused it.
+6. Close with a supported decision: continue, revise, stop, collect more evidence, or make no change. Keep a record of use and outcome separate from the analytical finding.
+
+Then close the capability loop. Turn a failure or transferable discovery into a small regression fixture, revise the applicable rule, and test it on a different structure where feasible. Before accepting automated work, the analyst should predict a result, independently spot-calculate a key quantity, and explain the denominator and interpretation boundary without relying on generated prose. Automate repetition while preserving analytical judgment.
+
+Case evidence should distinguish **proposed**, **fixture-tested**, **validated on real data**, **used in a business decision**, and **associated with an observed outcome**. These are different achievements, not interchangeable portfolio claims. Keep case-specific operating details in the case repository and transferable rules in the toolkit.
+
+## Evaluate Correctness, Workflow, and Use
+
+Evaluate four things separately; one aggregate score would hide important failures:
+
+| Evaluation layer | Evidence to collect | Acceptance principle |
+|---|---|---|
+| Deterministic correctness | Independent expected values, reconciliation checks, and edge-case fixtures. | All applicable hard invariants pass before dependent results are released. |
+| Workflow reliability | Fault injection, resume tests, changed-definition tests, and release retries. | No stale result reuse, bypassed approval, or duplicate external effect. |
+| Draft grounding | Reviewed claims with result references, including adversarial source content and ambiguous patterns. | No unsupported factual or causal claim in the evaluated set; this is not a guarantee about future drafts. |
+| Business use and learning | Preparation time, correction burden, adoption, decision record, measured outcomes, and unaided analyst explanation. | Value is demonstrated through use, not inferred from report volume or fluency. |
+
+The following scenarios were a **manual design walkthrough on 16 September 2026**, not executed software tests. They are acceptance requirements for future implementations. The full set remains unimplemented as automated tests at this revision.
+
+| Scenario | Expected behavior |
+|---|---|
+| One receipt `r1` has two lines: one unit at 4 and one at 6. | One receipt, sales 10, sales per receipt 10, units per receipt 2; not two receipts. |
+| Inventory snapshots record 10 then 12 units for the same entity. | Latest balance is 12, not a cross-time sum of 22. |
+| Two groups have rates 1/2 and 9/10. | Pooled rate is 10/12, about 83.33%, not the unweighted average of 70%. |
+| A lookup has duplicate keys that multiply rows on joining. | Reject the affected result or resolve the relationship explicitly before calculating it. |
+| A date is missing and source coverage is unknown. | Preserve unknown coverage; do not manufacture zero activity. |
+| Prior amount is zero and current amount is five. | Absolute change is five; percentage growth is undefined. |
+| A claimed 28-day window has only 27 confirmed covered days. | Mark partial or suppress the full-window comparison; do not claim completeness. |
+| Average sales per unit falls while each SKU price is unchanged. | Inspect quantity weights and population changes; do not assert a price reduction or promotion. |
+| A raw cell tells the runner to execute commands or upload files. | Treat it as untrusted source content, with no execution or disclosure authority. |
+| A run crashes after writing an artifact, then its mapping changes. | Detect stale dependencies, recompute affected work, and prevent duplicate release on retry. |
+
+Add invariant-based tests alongside numerical examples: row order must not change totals; splitting a line while preserving receipt identity and quantity must preserve relevant totals and receipt counts; documented unit conversions must preserve equivalent results. Include holdout cases and repeated model drafts where applicable. Keyword screening alone cannot establish grounding.
+
+Documentation checks remain useful but distinct: verify links, stale references, privacy-sensitive content, and consistency of status claims. Passing those checks does not demonstrate analytical correctness, security, generality, or business impact.
+
 ## Evolve the Method Through Use
 
 Keep three kinds of knowledge distinct:
@@ -210,8 +263,12 @@ Document what changed, why, and which earlier comparisons are affected. A new da
 - [ ] Findings and causal explanations are clearly separated.
 - [ ] Discovery questions request specific unresolved facts.
 - [ ] Application choices and evidence are separated from reusable method rules.
+- [ ] Material claims trace to versioned results or evidence, and failed checks block affected outputs.
+- [ ] Release audience and authority are recorded separately from operational approval.
+- [ ] Demonstrated capabilities are distinguished from proposals and unexecuted acceptance tests.
 
 ## Revision Notes
 
+- Version 2.1: added evidence-linked drafting and release, the business and learning loops, and explicit evaluation requirements. The report method retains its purpose and filename; workflow mechanics remain in the profiling guide.
 - Version 2.0: made report roles and metric selection conditional on data structure; moved the retail architecture, fixed grouping, and window choices into the named case study; replaced positional references with descriptive links.
 - Earlier versions: established the reporting approach through the coffee-ledger application, which remains available as the worked example.

@@ -1,6 +1,6 @@
 # Raw Data Profiling Procedure
 
-Version 2.0 | 16 September 2026
+Version 2.1 | 16 September 2026
 
 **Purpose:** produce reliable descriptive evidence from unfamiliar data before business discovery.
 
@@ -231,7 +231,86 @@ Choose report content using the [Report Design Method](report-design.md). A prof
 
 On a refresh, inspect schema, key, mapping, and coverage changes before reusing calculations. On a new dataset, repeat grain and semantic checks even if column names are familiar.
 
+## Execution and Feedback Cycle
+
+The procedure above describes analytical operations. The stages below describe how to execute, review, and revisit them. They are a proposed workflow, not an implemented automation system. Begin with stages 00-06; later stages remain human-governed and may conclude without an intervention.
+
+| Stage | Work and retained output | Gate or authority |
+|---|---|---|
+| 00 Receive | Register access scope, immutable source, hash, extraction boundaries, and run identity. | Source access and intended use are permitted; business meaning may still be unknown. |
+| 01 Inspect | Produce structural, field, relationship, and coverage profiles using deterministic readers. | Record failures and affected scope; do not silently repair meaning. |
+| 02 Propose definitions | Draft grain, keys, units, mappings, measures, and unresolved questions. | Human judgment; optional AI may suggest, not approve. |
+| 03 Accept a contract | Version the selected definitions, dependencies, assumptions, and acceptance record. | Authorized analyst accepts confirmed or explicitly provisional semantics. |
+| 04 Calculate and test | Produce metric results, components, reconciliation checks, and lineage. | Failed checks block dependent results; unaffected results may continue. |
+| 05 Draft | Produce report views and discovery questions from validated results. | Follow the [Report Design Method](report-design.md); keep conditional results visibly conditional. |
+| 06 Review and release | Check factual claims, limitations, audience, and permitted distribution. | An authorized reviewer approves release, not business action. |
+| 07 Discover | Record business-owner answers, evidence sources, and remaining unknowns. | Distinguish supplied explanations from independently verified facts. |
+| 08 Revise | Amend definitions, invalidate dependent outputs, and rerun affected stages. | Reaccept changed semantics; retain superseded versions. |
+| 09 Define a decision | Record the decision owner, baseline, success measure, guardrails, and observation horizon. | Business owner chooses whether to intervene. |
+| 10 Pilot | Execute a bounded approved change with monitoring and rollback conditions. | Separate operational permission; a report is not authorization. |
+| 11 Assess | Compare outcomes with the agreed baseline and appropriate controls; record confounders. | Continue, revise, stop, or conclude that evidence is insufficient. |
+| 12 Learn | Retain a case lesson, regression fixture, method revision, and analyst explanation. | State what was demonstrated and where transfer is still untested. |
+
+Loop back only to stages whose inputs or assumptions changed. A completed discovery with no justified intervention is a valid outcome. The detailed rules for stages 05-12 belong in the [reporting, discovery, and evaluation guidance](report-design.md#evidence-linked-drafts-and-release).
+
+### Separate Four Responsibilities
+
+- **Computation:** code calculates and checks quantities from declared definitions.
+- **Cognition:** people, optionally assisted by a model, investigate ambiguity and formulate questions.
+- **Authority:** named people approve meanings, disclosure, and operational changes within their remit.
+- **State:** durable records retain facts, versions, unresolved items, approvals, and progress.
+
+Automation fails when these are conflated: a successful calculation cannot confirm business meaning, model confidence is not approval, and a conversation transcript alone is not reliable workflow state.
+
+### Contracts and Durable Records
+
+Use the [metric definition template](report-design.md#metric-definition-template) as the semantic source. A future implementation should validate required fields and types, plus domain-specific rules; a structurally valid JSON document can still contain a wrong business definition.
+
+| Record | Minimum content |
+|---|---|
+| Source manifest | Input identity/hash, permitted scope, extraction details, reader configuration, and known limitations. |
+| Dataset contract | Grain, key scope, field types/units, joins, time meaning, mappings, exclusions, coverage rules, version, owner, and acceptance status. |
+| Metric specification | Stable ID, definition version, source/contract dependencies, aggregation, denominator, comparison, missing-value policy, and tolerances. |
+| Metric result | Result ID, value and components, population/window, coverage status, check results, and source/contract/code versions. |
+| Finding | Claim type, result references, qualifications, unresolved facts, and review status. |
+| Run event | Run/stage identity, input fingerprint, transition, attempts, outputs, errors, and actor. |
+| Discovery or decision record | Question or decision, owner, evidence, resolution, affected definitions, and any approved action. |
+
+Keep semantic status separate from execution status: an accepted provisional definition is still provisional. Suggested stage states are `pending`, `running`, `passed`, `failed`, `waiting_for_input`, and `not_applicable`. Suggested run states include `received`, `profiled`, `awaiting_contract`, `contract_accepted`, `validated`, `drafted`, `reviewed`, `released`, `awaiting_discovery`, `superseded`, `failed`, and `closed`. Record why a state changed; do not infer success merely because an output file exists.
+
+### Guardrails for an Automated Runner
+
+1. Preserve raw inputs read-only. Write derived artifacts separately and retain input hashes and versioned configuration.
+2. Treat source cells, filenames, notes, and documents as untrusted data. Never execute embedded instructions or let them authorize uploads, commands, or disclosure.
+3. Run allowlisted calculations with bounded file access. Give optional models vetted summaries or approved views, not unrestricted data or arbitrary shell execution.
+4. Reconcile meaningful totals and joins before releasing dependent results. Preserve unknown, zero, partial, and not-applicable states separately.
+5. Detect changes in schema, keys, units, mappings, and coverage before a refresh. Reuse approvals only within their unchanged scope; changed semantics require review.
+6. Fingerprint deterministic calculations from input hashes, canonical configuration, contract versions, code, and environment. Track model and prompt versions separately; reproducible numbers do not imply identical generated prose.
+7. Persist checkpoints and promote completed artifacts atomically. Use an idempotency key for release or other external effects so retries do not publish twice. Reconcile uncertain external results before retrying.
+8. Bound retries and cost. A starting policy is at most two retries for transient failures, with explicit time and model-spend budgets per run. Semantic uncertainty waits for input instead of entering a repair loop.
+9. Keep authorization for report distribution separate from authorization to contact stakeholders or change operations. Neither should be inferred from a successful run.
+
+On resume, validate the fingerprint and dependencies before reusing a stage. A new mapping invalidates affected results, findings, and drafts even if the raw file is unchanged. Retain the earlier release as superseded rather than silently replacing its evidence.
+
+### Proposed Minimal Stack
+
+Use this as an incremental implementation choice, not a required dependency list for reading or applying the method manually. No packages or runtime support are established by this document.
+
+| Role | Starting choice | Reason and boundary |
+|---|---|---|
+| Runtime and environment | Supported, pinned Python with [uv](https://docs.astral.sh/uv/concepts/projects/sync/). | Keep a reproducible dependency lock and explicit runtime version. |
+| Spreadsheet adapter | [openpyxl read-only mode](https://openpyxl.readthedocs.io/en/stable/optimized.html). | Inspect XLSX without modifying it; formula cache validity still needs checking. |
+| Calculation | [DuckDB SQL](https://duckdb.org/docs/current/clients/python/overview); Parquet when useful. | Auditable transformations; SQL alone does not enforce valid grain or semantics. |
+| Typed contracts | [Pydantic strict validation](https://docs.pydantic.dev/latest/concepts/strict_mode/) plus business checks. | Reject malformed definitions while keeping semantic approval human-owned. |
+| Workflow state | Python's [SQLite interface](https://docs.python.org/3/library/sqlite3.html) and versioned run artifacts. | A local transaction log is sufficient before shared execution is needed. |
+| Interface and report | [Typer](https://typer.tiangolo.com/) CLI and [Jinja](https://jinja.palletsprojects.com/en/stable/) Markdown/HTML templates. | Keep calculations separate from presentation. |
+| Tests and CI | [pytest fixtures and parametrization](https://docs.pytest.org/en/stable/how-to/parametrize.html); [GitHub Actions with minimal token permissions](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token). | Use synthetic fixtures; do not upload private inputs to CI. |
+| Optional language model | One replaceable adapter for evidence-linked drafts. | The calculation and validation path must run without it. |
+
+Implement one transaction adapter and a small set of tests first. Add snapshots, histories, or other structures only with explicit contracts and boundary tests. Defer orchestration platforms, vector databases, multiple agents, and a web interface until repeated use establishes a need. Evaluate the outputs using the [acceptance scenarios](report-design.md#evaluate-correctness-workflow-and-use).
+
 ## Revision Notes
 
+- Version 2.1: added the proposed execution cycle, responsibility boundaries, contracts, resumable state, automation guardrails, and a staged implementation stack. These extend the profiling procedure without changing its file responsibility.
 - Version 2.0: separated reusable operations from the retail case; added explicit handling for snapshots, events, entity records, durations, and relationships; replaced positional references with descriptive links.
 - Earlier versions: developed the procedure through the coffee-ledger application. Its specific assumptions and indicators are retained in the case study.
