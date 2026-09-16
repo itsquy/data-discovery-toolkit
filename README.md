@@ -96,6 +96,8 @@ When adding a new dataset, create a descriptively named case under `examples/`. 
 
 Update a guide in place while its responsibility remains the same. Rename or split it only when that responsibility changes substantially, updating incoming links and recording the reason. Step numbers can identify workflow order; they must not substitute for durable document names.
 
+When noting a version, include its update timestamp with timezone and a brief change summary and reason: `Version | Updated | Changed | Why`. Describe the meaningful difference from the preceding revision, like a concise Git commit summary, rather than repeating the document's contents. Keep the latest version and timestamp at the top of each versioned guide and put its newest revision note first. Use Git history for exact line changes. For older revisions, retain the known date and leave an unknown time unspecified; do not invent timestamps.
+
 ## Ownership and Status
 
 Maintained by [itsquy](https://github.com/itsquy) as an evolving professional practice and potential practical tool.

@@ -1,6 +1,6 @@
 # Raw Data Profiling Procedure
 
-Version 2.1 | 16 September 2026
+Version 2.1.1 | Updated 2026-09-16 22:59 +07:00
 
 **Purpose:** produce reliable descriptive evidence from unfamiliar data before business discovery.
 
@@ -311,6 +311,7 @@ Implement one transaction adapter and a small set of tests first. Add snapshots,
 
 ## Revision Notes
 
-- Version 2.1: added the proposed execution cycle, responsibility boundaries, contracts, resumable state, automation guardrails, and a staged implementation stack. These extend the profiling procedure without changing its file responsibility.
-- Version 2.0: separated reusable operations from the retail case; added explicit handling for snapshots, events, entity records, durations, and relationships; replaced positional references with descriptive links.
+- Version 2.1.1 | Updated 2026-09-16 22:59 +07:00 | Changed: timestamped version notes with explicit change summaries and reasons. Why: make revision history understandable without opening a full Git diff; analytical rules are unchanged.
+- Version 2.1 | Updated 2026-09-16 (time not recorded) | Changed: added the proposed execution cycle, contracts, resumable state, guardrails, and implementation stack. Why: translate the manual procedure into an automation specification without implying that the engine is implemented.
+- Version 2.0 | Updated 2026-09-16 (time not recorded) | Changed: separated the retail case, added structure-specific operations, and replaced positional references with descriptive links. Why: support different data structures without inheriting coffee-ledger assumptions or unstable document numbering.
 - Earlier versions: developed the procedure through the coffee-ledger application. Its specific assumptions and indicators are retained in the case study.

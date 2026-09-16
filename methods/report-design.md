@@ -1,6 +1,6 @@
 # Report Design Method
 
-Version 2.1 | 16 September 2026
+Version 2.1.1 | Updated 2026-09-16 22:59 +07:00
 
 **Purpose:** turn profiled evidence into a readable, defensible report that prepares business discovery and can evolve with new datasets.
 
@@ -269,6 +269,7 @@ Document what changed, why, and which earlier comparisons are affected. A new da
 
 ## Revision Notes
 
-- Version 2.1: added evidence-linked drafting and release, the business and learning loops, and explicit evaluation requirements. The report method retains its purpose and filename; workflow mechanics remain in the profiling guide.
-- Version 2.0: made report roles and metric selection conditional on data structure; moved the retail architecture, fixed grouping, and window choices into the named case study; replaced positional references with descriptive links.
+- Version 2.1.1 | Updated 2026-09-16 22:59 +07:00 | Changed: timestamped version notes with explicit change summaries and reasons. Why: make revision history understandable without opening a full Git diff; reporting rules are unchanged.
+- Version 2.1 | Updated 2026-09-16 (time not recorded) | Changed: added evidence-linked drafting, release approval, business and learning loops, and evaluation requirements. Why: connect reports to governed decisions and distinguish demonstrated capability from proposed automation.
+- Version 2.0 | Updated 2026-09-16 (time not recorded) | Changed: made report roles conditional on data structure, moved retail choices into the case study, and replaced positional references with descriptive links. Why: keep reusable reporting rules precise without imposing one ledger's hierarchy on future datasets.
 - Earlier versions: established the reporting approach through the coffee-ledger application, which remains available as the worked example.
