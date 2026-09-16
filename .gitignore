@@ -1,0 +1,24 @@
+# Local data and generated analysis artifacts
+/data/
+/work/
+/outputs/
+*.xlsx
+*.xls
+*.csv
+*.tsv
+*.parquet
+*.db
+*.sqlite
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+
+# Runtime and editor artifacts
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.DS_Store
+Thumbs.db
